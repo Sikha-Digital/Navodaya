@@ -300,7 +300,7 @@ const AREA_UNITS = {
     "Mahadood",
     "AC Member"
   ],
-  "Regional Committe": [
+  "Regional Committee": [
     "RC Member"
   ],
   "Dammam Family": [
