@@ -46,14 +46,35 @@ class SearchableCombobox {
   setupItems() {
     this.items = Array.from(this.list.querySelectorAll('li'));
     this.items.forEach((item) => {
-      const selectHandler = (e) => {
+      let touchStartY = 0;
+      let touchMoved = false;
+
+      // Record finger position on touch start — do NOT select yet
+      item.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+      }, { passive: true });
+
+      // Track if the finger moved (scroll gesture)
+      item.addEventListener('touchmove', () => {
+        touchMoved = true;
+      }, { passive: true });
+
+      // Only select if the finger didn't scroll (it was a tap)
+      item.addEventListener('touchend', (e) => {
+        if (!touchMoved) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.selectItem(item);
+        }
+      }, { passive: false });
+
+      // Desktop mouse click
+      item.addEventListener('mousedown', (e) => {
         e.stopPropagation();
         e.preventDefault();
         this.selectItem(item);
-      };
-      item.addEventListener('mousedown', selectHandler);
-      item.addEventListener('touchstart', selectHandler, { passive: false });
-      item.addEventListener('click', selectHandler);
+      });
     });
   }
 
