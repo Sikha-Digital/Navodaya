@@ -3,7 +3,7 @@
  */
 
 // IMPORTANT: Replace this placeholder with your deployed Google Apps Script Web App URL!
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTzhBzJeHrK2srklXAwqRGlCYhpFxrC0SYZ9eb1MV82D86w46hsn4R7h0cd1B8S3s/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkie_5Snmq2nW2pRnsJG9E8ijGxmVBSMt51VuuCQL5aRtvhomkma2tsM5l3jsWLCMO/exec';
 
 // Dropdown Component Controller (scroll & select, no search filter)
 class SearchableCombobox {
