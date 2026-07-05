@@ -217,6 +217,9 @@ const AREA_UNITS = {
     "Badiya",
     "Della",
     "Qatif"
+  ],
+  "KVCC": [
+    "KVCC Member"
   ]
 };
 
@@ -224,15 +227,15 @@ const AREA_UNITS = {
 areaInput.addEventListener('input', () => {
   const selectedArea = areaInput.value.trim();
   const matchingUnits = AREA_UNITS[selectedArea];
-  
+
+  // Always reset unit when area changes
+  unitInput.value = '';
+  unitCombobox.reset();
+
   if (matchingUnits) {
     unitCombobox.updateOptions(matchingUnits);
-    unitInput.placeholder = " ";
   } else {
-    // Clear Unit selection if Area is empty or invalid
     unitCombobox.updateOptions([]);
-    unitInput.value = '';
-    unitInput.dispatchEvent(new Event('input'));
   }
 });
 
