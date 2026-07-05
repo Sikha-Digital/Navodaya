@@ -192,6 +192,13 @@ input {
   transition: all var(--transition-speed) ease;
 }
 
+/* Readonly dropdown inputs show pointer cursor */
+.combobox input[readonly] {
+  cursor: pointer;
+  caret-color: transparent;
+  user-select: none;
+}
+
 /* Floating Label Logic */
 .input-wrapper label {
   position: absolute;

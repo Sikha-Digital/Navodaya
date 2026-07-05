@@ -5,44 +5,36 @@
 // IMPORTANT: Replace this placeholder with your deployed Google Apps Script Web App URL!
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTzhBzJeHrK2srklXAwqRGlCYhpFxrC0SYZ9eb1MV82D86w46hsn4R7h0cd1B8S3s/exec';
 
-// Searchable Combobox Component Controller
+// Dropdown Component Controller (scroll & select, no search filter)
 class SearchableCombobox {
   constructor(comboboxId, inputId, listId) {
     this.combobox = document.getElementById(comboboxId);
     this.input = document.getElementById(inputId);
     this.list = document.getElementById(listId);
     this.toggleBtn = this.combobox.querySelector('.dropdown-toggle');
-    this.items = Array.from(this.list.querySelectorAll('li'));
-    
+    this.items = [];
+
     this.isOpen = false;
-    this.highlightedIndex = -1;
-    
+
     this.init();
   }
-  
+
   init() {
-    // Open dropdown when focusing the input
-    this.input.addEventListener('focus', () => this.open());
-    
+    // Open dropdown when tapping/clicking the readonly input
+    this.input.addEventListener('click', () => {
+      this.isOpen ? this.close() : this.open();
+    });
+
     // Toggle dropdown when clicking the toggle button
     this.toggleBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
       this.isOpen ? this.close() : this.open();
     });
-    
-    // Filter list on typing
-    this.input.addEventListener('input', () => {
-      this.open();
-      this.filterItems();
-    });
-    
-    // Keydown event bindings for keyboard accessibility
-    this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
-    
-    // Initial setup of list item click/hover listeners
+
+    // Initial setup of list item listeners
     this.setupItems();
-    
+
     // Close dropdown on click outside
     document.addEventListener('click', (e) => {
       if (!this.combobox.contains(e.target)) {
@@ -50,27 +42,21 @@ class SearchableCombobox {
       }
     });
   }
-  
+
   setupItems() {
     this.items = Array.from(this.list.querySelectorAll('li'));
-    this.items.forEach((item, index) => {
-      // Trigger selection on mousedown/touchstart for instant action (prevents blur race condition)
+    this.items.forEach((item) => {
       const selectHandler = (e) => {
         e.stopPropagation();
         e.preventDefault();
         this.selectItem(item);
       };
-      
       item.addEventListener('mousedown', selectHandler);
-      item.addEventListener('touchstart', selectHandler);
+      item.addEventListener('touchstart', selectHandler, { passive: false });
       item.addEventListener('click', selectHandler);
-      
-      item.addEventListener('mousemove', () => {
-        this.highlightIndex(index);
-      });
     });
   }
-  
+
   updateOptions(options) {
     this.list.innerHTML = '';
     options.forEach(opt => {
@@ -80,139 +66,40 @@ class SearchableCombobox {
       this.list.appendChild(li);
     });
     this.setupItems();
-    this.highlightedIndex = -1;
   }
-  
+
   open() {
     if (this.isOpen) return;
     this.isOpen = true;
     this.combobox.classList.add('open');
-    this.highlightedIndex = -1;
-    this.filterItems();
+
+    // Scroll to the currently selected item if any
+    const selected = this.list.querySelector('li.selected');
+    if (selected) {
+      selected.scrollIntoView({ block: 'nearest' });
+    }
   }
-  
+
   close() {
     if (!this.isOpen) return;
     this.isOpen = false;
     this.combobox.classList.remove('open');
-    this.clearHighlight();
-    
-    // Trigger validation and formatting
     this.input.dispatchEvent(new Event('blur'));
   }
-  
-  filterItems() {
-    const filterText = this.input.value.toLowerCase().trim();
-    this.items.forEach(item => {
-      const itemText = item.textContent.toLowerCase();
-      if (itemText.includes(filterText)) {
-        item.classList.remove('hidden');
-      } else {
-        item.classList.add('hidden');
-        item.classList.remove('highlighted');
-      }
-    });
-    
-    // Recalibrate highlight index if the highlighted item is filtered out
-    const visibleItems = this.getVisibleItems();
-    if (this.highlightedIndex >= visibleItems.length) {
-      this.highlightedIndex = visibleItems.length - 1;
-    }
-  }
-  
-  getVisibleItems() {
-    return this.items.filter(item => !item.classList.contains('hidden'));
-  }
-  
-  highlightIndex(index) {
-    const visibleItems = this.getVisibleItems();
-    this.clearHighlight();
-    
-    if (index >= 0 && index < visibleItems.length) {
-      this.highlightedIndex = index;
-      visibleItems[index].classList.add('highlighted');
-      this.scrollIntoView(visibleItems[index]);
-    } else {
-      this.highlightedIndex = -1;
-    }
-  }
-  
-  clearHighlight() {
-    this.items.forEach(item => item.classList.remove('highlighted'));
-  }
-  
-  scrollIntoView(item) {
-    const listTop = this.list.scrollTop;
-    const listBottom = listTop + this.list.clientHeight;
-    
-    const itemTop = item.offsetTop;
-    const itemBottom = itemTop + item.clientHeight;
-    
-    if (itemTop < listTop) {
-      this.list.scrollTop = itemTop;
-    } else if (itemBottom > listBottom) {
-      this.list.scrollTop = itemBottom - this.list.clientHeight;
-    }
-  }
-  
+
   selectItem(item) {
     const val = item.getAttribute('data-value');
     this.input.value = val;
-    
+
     this.items.forEach(i => i.classList.remove('selected'));
     item.classList.add('selected');
-    
+
     this.close();
     this.input.dispatchEvent(new Event('input'));
   }
-  
-  handleKeydown(e) {
-    const visibleItems = this.getVisibleItems();
-    
-    if (!this.isOpen && e.key === 'ArrowDown') {
-      e.preventDefault();
-      this.open();
-      return;
-    }
-    
-    if (!this.isOpen) return;
-    
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        const nextIndex = visibleItems.length > 0 ? (this.highlightedIndex + 1) % visibleItems.length : -1;
-        this.highlightIndex(nextIndex);
-        break;
-        
-      case 'ArrowUp':
-        e.preventDefault();
-        const prevIndex = visibleItems.length > 0 ? (this.highlightedIndex - 1 + visibleItems.length) % visibleItems.length : -1;
-        this.highlightIndex(prevIndex);
-        break;
-        
-      case 'Enter':
-        e.preventDefault();
-        if (this.highlightedIndex >= 0 && this.highlightedIndex < visibleItems.length) {
-          this.selectItem(visibleItems[this.highlightedIndex]);
-        } else {
-          this.close();
-        }
-        break;
-        
-      case 'Escape':
-        e.preventDefault();
-        this.close();
-        break;
-        
-      case 'Tab':
-        this.close();
-        break;
-    }
-  }
-  
+
   reset() {
-    this.items.forEach(i => i.classList.remove('selected', 'highlighted'));
-    this.highlightedIndex = -1;
+    this.items.forEach(i => i.classList.remove('selected'));
   }
 }
 
