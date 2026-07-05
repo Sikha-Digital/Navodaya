@@ -126,21 +126,19 @@ body {
 }
 
 .logo-container {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  border-radius: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0 auto 16px auto;
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  color: white;
+.logo-img {
+  width: auto;
+  max-width: 200px;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.3));
 }
 
 h1 {
