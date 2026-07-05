@@ -133,10 +133,8 @@ body {
 }
 
 .logo-img {
-  width: auto;
-  max-width: 200px;
-  height: auto;
-  max-height: 90px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.3));
 }
@@ -452,6 +450,10 @@ h2 {
   input:focus ~ label,
   input:not(:placeholder-shown) ~ label {
     left: 16px;
+  }
+  .logo-img {
+    width: 120px;
+    height: 120px;
   }
 }
 
