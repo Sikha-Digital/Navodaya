@@ -300,11 +300,16 @@ const AREA_UNITS = {
     "Mahadood",
     "AC Member"
   ],
-  "Regiona Committe": [
-    "AC Member"
+  "Regional Committe": [
+    "RC Member"
   ],
   "Dammam Family": [
-    "AC Member"
+    "Dammam Town",
+    "Jalawiya",
+    "Gazaz",
+    "Badiya",
+    "Della",
+    "Qatif"
   ]
 };
 
