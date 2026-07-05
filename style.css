@@ -493,6 +493,9 @@ h2 {
   width: 100%;
   max-height: 220px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+  overscroll-behavior: contain;      /* prevent page scroll leak */
+  touch-action: pan-y;               /* let browser handle vertical scroll natively */
   background: rgba(18, 14, 38, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -521,6 +524,7 @@ h2 {
   font-size: 0.95rem;
   color: var(--text-secondary);
   cursor: pointer;
+  touch-action: pan-y; /* don't block vertical scroll on touch */
   transition: all 0.2s ease;
 }
 
