@@ -68,16 +68,25 @@ function doPost(e) {
       sheet.setFrozenRows(1);
     }
 
-    // 6. Generate timezone-adjusted Timestamp
+    // 6. Check for duplicate phone number
+    if (sheet.getLastRow() > 1) {
+      const phoneColumn = sheet.getRange(2, 3, sheet.getLastRow() - 1, 1).getValues();
+      const phoneExists = phoneColumn.some(row => String(row[0]).trim() === phone);
+      if (phoneExists) {
+        return jsonResponse('error', 'This mobile number is already registered.');
+      }
+    }
+
+    // 7. Generate timezone-adjusted Timestamp
     const timestamp = Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), "yyyy-MM-dd HH:mm:ss");
 
-    // 7. Append registration data as a new row
+    // 8. Append registration data as a new row
     sheet.appendRow([timestamp, name, phone, area, unit]);
 
-    // 8. Auto-adjust columns to fit content widths
+    // 9. Auto-adjust columns to fit content widths
     sheet.autoResizeColumns(1, 5);
 
-    // 9. Return success status
+    // 10. Return success status
     return jsonResponse('success', 'Registration saved successfully.', {
       timestamp: timestamp,
       insertedRow: sheet.getLastRow()
