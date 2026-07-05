@@ -73,10 +73,15 @@ class SearchableCombobox {
     this.isOpen = true;
     this.combobox.classList.add('open');
 
-    // Scroll to the currently selected item if any
+    // Scroll selected item into view within the list container (NOT the page)
     const selected = this.list.querySelector('li.selected');
     if (selected) {
-      selected.scrollIntoView({ block: 'nearest' });
+      // Use a small timeout to let the CSS transition open first
+      setTimeout(() => {
+        this.list.scrollTop = selected.offsetTop - this.list.clientHeight / 2 + selected.clientHeight / 2;
+      }, 50);
+    } else {
+      this.list.scrollTop = 0;
     }
   }
 
