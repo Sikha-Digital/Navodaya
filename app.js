@@ -302,7 +302,7 @@ form.addEventListener('submit', async (e) => {
   // Prepare payload
   const payload = {
     name: nameInput.value.trim(),
-    phone: '+966 ' + phoneInput.value.trim(),
+    phone: '966' + phoneInput.value.trim(),
     area: areaInput.value.trim(),
     unit: unitInput.value.trim()
   };
