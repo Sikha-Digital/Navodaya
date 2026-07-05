@@ -91,7 +91,7 @@ body {
   width: 100%;
   max-width: 460px;
   box-shadow: var(--card-shadow);
-  overflow: hidden;
+  overflow: visible;
   position: relative;
   transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
@@ -412,7 +412,8 @@ h2 {
 /* Custom styles for smaller mobile screens */
 @media (max-width: 480px) {
   body {
-    padding: 10px;
+    padding: 40px 10px;
+    justify-content: flex-start;
   }
   .card-container {
     border-radius: 20px;

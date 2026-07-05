@@ -54,11 +54,17 @@ class SearchableCombobox {
   setupItems() {
     this.items = Array.from(this.list.querySelectorAll('li'));
     this.items.forEach((item, index) => {
-      item.addEventListener('click', (e) => {
+      // Trigger selection on mousedown/touchstart for instant action (prevents blur race condition)
+      const selectHandler = (e) => {
         e.stopPropagation();
         e.preventDefault();
         this.selectItem(item);
-      });
+      };
+      
+      item.addEventListener('mousedown', selectHandler);
+      item.addEventListener('touchstart', selectHandler);
+      item.addEventListener('click', selectHandler);
+      
       item.addEventListener('mousemove', () => {
         this.highlightIndex(index);
       });
@@ -242,7 +248,8 @@ const AREA_UNITS = {
     "Ladies Market",
     "Amamrah",
     "Madinath al umal",
-    "Abdullah Faud"
+    "Abdullah Faud",
+    "AC Member"
   ],
   "Toyota": [
     "Khaleej 1",
@@ -253,7 +260,8 @@ const AREA_UNITS = {
     "Anood",
     "Badiya",
     "Jalawiya",
-    "Toyota"
+    "Toyota",
+    "AC Member"
   ],
   "Della": [
     "Bandhariya",
@@ -261,13 +269,15 @@ const AREA_UNITS = {
     "Kodariya South",
     "Della",
     "Della Sanayya East",
-    "Della Sanayya West"
+    "Della Sanayya West",
+    "AC Member"
   ],
   "Faisaliya": [
     "Ninety One",
     "Faisaliya",
     "Souq Khanam",
-    "Thirty Seven"
+    "Thirty Seven",
+    "AC Member"
   ],
   "Sihath": [
     "Sihat Town",
@@ -275,7 +285,8 @@ const AREA_UNITS = {
     "Anak",
     "Ummul Hammam",
     "Nabiya",
-    "Al Aujam"
+    "Al Aujam",
+    "AC Member"
   ],
   "Qatif": [
     "Tharoth",
@@ -286,7 +297,14 @@ const AREA_UNITS = {
     "Market",
     "Majidiya",
     "South",
-    "Mahadood"
+    "Mahadood",
+    "AC Member"
+  ],
+  "Regiona Committe": [
+    "AC Member"
+  ],
+  "Dammam Family": [
+    "AC Member"
   ]
 };
 
@@ -486,4 +504,9 @@ resetBtn.addEventListener('click', () => {
     formPanel.classList.add('active');
     generalError.classList.add('hidden');
   }, 300);
+});
+
+// Automatically focus Name input on load
+window.addEventListener('DOMContentLoaded', () => {
+  nameInput.focus();
 });
