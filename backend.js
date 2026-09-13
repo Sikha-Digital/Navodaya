@@ -67,7 +67,7 @@ function doPost(e) {
       sheet = ss.insertSheet("Registrations");
     }
 
-    // 5. Ensure header columns are complete (15 columns)
+    // 5. Always ensure Row 1 has all 15 column headers styled properly
     const headers = [
       "Timestamp",
       "Full Name",
@@ -86,22 +86,11 @@ function doPost(e) {
       "Partner Date of Birth"
     ];
 
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(headers);
-      const headerRange = sheet.getRange(1, 1, 1, 15);
-      headerRange.setFontWeight("bold");
-      headerRange.setBackground("#e5e7eb");
-      sheet.setFrozenRows(1);
-    } else {
-      // Auto-update header row if existing sheet had fewer columns
-      if (sheet.getLastColumn() < 15) {
-        sheet.getRange(1, 1, 1, 15).setValues([headers]);
-        const headerRange = sheet.getRange(1, 1, 1, 15);
-        headerRange.setFontWeight("bold");
-        headerRange.setBackground("#e5e7eb");
-        sheet.setFrozenRows(1);
-      }
-    }
+    sheet.getRange(1, 1, 1, 15).setValues([headers]);
+    const headerRange = sheet.getRange(1, 1, 1, 15);
+    headerRange.setFontWeight("bold");
+    headerRange.setBackground("#e5e7eb");
+    sheet.setFrozenRows(1);
 
     // 6. Check for duplicate phone number in current category
     if (sheet.getLastRow() > 1) {
