@@ -379,7 +379,8 @@ input {
 
 /* Label movement on focus and content presence */
 input:focus ~ label,
-input:not(:placeholder-shown) ~ label {
+input:not(:placeholder-shown) ~ label,
+input[type="date"]:valid ~ label {
   top: 0;
   transform: translateY(-50%) scale(0.85);
   background-color: #0b1730;
@@ -387,6 +388,11 @@ input:not(:placeholder-shown) ~ label {
   left: 20px;
   color: var(--accent-secondary);
   font-weight: 500;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.85) sepia(0.5) saturate(3) hue-rotate(5deg);
+  cursor: pointer;
 }
 
 input:focus {

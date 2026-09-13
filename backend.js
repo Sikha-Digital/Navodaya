@@ -42,6 +42,9 @@ function doPost(e) {
     const name = data.name ? String(data.name).trim() : '';
     const phone = data.phone ? String(data.phone).trim() : '';
     const email = data.email ? String(data.email).trim() : '';
+    const iqama = data.iqama ? String(data.iqama).trim() : '';
+    const gender = data.gender ? String(data.gender).trim() : '';
+    const dob = data.dob ? String(data.dob).trim() : '';
     const club = data.club ? String(data.club).trim() : '';
     const category = data.category ? String(data.category).trim() : '';
     const flight = data.flight ? String(data.flight).trim() : '';
@@ -49,7 +52,7 @@ function doPost(e) {
     const partnerPhone = data.partnerPhone ? String(data.partnerPhone).trim() : '';
 
     // 3. Validation
-    if (!name || !phone || !email || !category || !flight) {
+    if (!name || !phone || !email || !iqama || !gender || !dob || !category || !flight) {
       return jsonResponse('error', 'Validation failed. Please ensure all required fields are filled.');
     }
 
@@ -68,6 +71,9 @@ function doPost(e) {
         "Full Name",
         "Phone Number",
         "Email Address",
+        "Iqama / ID Number",
+        "Gender",
+        "Date of Birth",
         "Country / Club",
         "Event Category",
         "Level / Flight",
@@ -75,7 +81,7 @@ function doPost(e) {
         "Partner Contact"
       ]);
       // Style the header row (Bold text, medium-grey background)
-      const headerRange = sheet.getRange(1, 1, 1, 9);
+      const headerRange = sheet.getRange(1, 1, 1, 12);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#e5e7eb");
       sheet.setFrozenRows(1);
@@ -83,10 +89,10 @@ function doPost(e) {
 
     // 6. Check for duplicate phone number in current category
     if (sheet.getLastRow() > 1) {
-      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 6).getValues();
+      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 9).getValues();
       const duplicateExists = rows.some(row => {
         const rowPhone = String(row[2]).trim();
-        const rowCategory = String(row[5]).trim();
+        const rowCategory = String(row[8]).trim();
         return rowPhone === phone && rowCategory === category;
       });
       if (duplicateExists) {
@@ -103,6 +109,9 @@ function doPost(e) {
       name,
       phone,
       email,
+      iqama,
+      gender,
+      dob,
       club,
       category,
       flight,
@@ -111,7 +120,7 @@ function doPost(e) {
     ]);
 
     // 9. Auto-adjust columns to fit content widths
-    sheet.autoResizeColumns(1, 9);
+    sheet.autoResizeColumns(1, 12);
 
     // 10. Return success status
     return jsonResponse('success', 'Tournament entry saved successfully.', {

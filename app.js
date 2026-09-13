@@ -132,6 +132,9 @@ const form = document.getElementById('registrationForm');
 const nameInput = document.getElementById('nameInput');
 const phoneInput = document.getElementById('phoneInput');
 const emailInput = document.getElementById('emailInput');
+const iqamaInput = document.getElementById('iqamaInput');
+const genderInput = document.getElementById('genderInput');
+const dobInput = document.getElementById('dobInput');
 const clubInput = document.getElementById('clubInput');
 const categoryInput = document.getElementById('categoryInput');
 const flightInput = document.getElementById('flightInput');
@@ -147,7 +150,6 @@ const spinner = submitBtn.querySelector('.spinner');
 const introPanel = document.getElementById('introPanel');
 const enterPortalBtn = document.getElementById('enterPortalBtn');
 const introProgressBar = document.getElementById('introProgressBar');
-
 const formPanel = document.getElementById('formPanel');
 const successPanel = document.getElementById('successPanel');
 const resetBtn = document.getElementById('resetBtn');
@@ -198,6 +200,7 @@ function startIntroProgress() {
 }
 
 // Initialize combobox components
+const genderCombobox = new SearchableCombobox('genderCombobox', 'genderInput', 'genderList');
 const categoryCombobox = new SearchableCombobox('categoryCombobox', 'categoryInput', 'categoryList');
 const flightCombobox = new SearchableCombobox('flightCombobox', 'flightInput', 'flightList');
 
@@ -229,6 +232,7 @@ function checkDoublesCategory() {
 // Regex Validations
 const PHONE_REGEX = /^[0-9]{9,15}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const IQAMA_REGEX = /^[0-9]{10}$/;
 
 /**
  * Validates a single input field
@@ -276,6 +280,20 @@ phoneInput.addEventListener('input', () => {
 emailInput.addEventListener('blur', () => validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.'));
 emailInput.addEventListener('input', () => emailInput.classList.contains('touched') && validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.'));
 
+iqamaInput.addEventListener('blur', () => validateInput(iqamaInput, document.getElementById('iqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter a 10-digit Iqama / ID number.'));
+iqamaInput.addEventListener('input', () => {
+  iqamaInput.value = iqamaInput.value.replace(/[^0-9]/g, '');
+  if (iqamaInput.classList.contains('touched')) {
+    validateInput(iqamaInput, document.getElementById('iqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter a 10-digit Iqama / ID number.');
+  }
+});
+
+genderInput.addEventListener('blur', () => validateInput(genderInput, document.getElementById('genderError'), null, 'Gender selection is required.'));
+genderInput.addEventListener('change', () => validateInput(genderInput, document.getElementById('genderError'), null, 'Gender selection is required.'));
+
+dobInput.addEventListener('blur', () => validateInput(dobInput, document.getElementById('dobError'), null, 'Date of Birth is required.'));
+dobInput.addEventListener('change', () => validateInput(dobInput, document.getElementById('dobError'), null, 'Date of Birth is required.'));
+
 clubInput.addEventListener('blur', () => validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.'));
 clubInput.addEventListener('input', () => clubInput.classList.contains('touched') && validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.'));
 
@@ -308,6 +326,9 @@ form.addEventListener('submit', async (e) => {
   const isNameValid = validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.');
   const isPhoneValid = validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.');
   const isEmailValid = validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.');
+  const isIqamaValid = validateInput(iqamaInput, document.getElementById('iqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter a 10-digit Iqama / ID number.');
+  const isGenderValid = validateInput(genderInput, document.getElementById('genderError'), null, 'Gender selection is required.');
+  const isDobValid = validateInput(dobInput, document.getElementById('dobError'), null, 'Date of Birth is required.');
   const isClubValid = validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.');
   const isCategoryValid = validateInput(categoryInput, document.getElementById('categoryError'), null, 'Event category selection is required.');
   const isFlightValid = validateInput(flightInput, document.getElementById('flightError'), null, 'Level selection is required.');
@@ -319,8 +340,8 @@ form.addEventListener('submit', async (e) => {
     isPartnerValid = isPNameValid && isPPhoneValid;
   }
 
-  if (!isNameValid || !isPhoneValid || !isEmailValid || !isClubValid || !isCategoryValid || !isFlightValid || !isPartnerValid) {
-    [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
+  if (!isNameValid || !isPhoneValid || !isEmailValid || !isIqamaValid || !isGenderValid || !isDobValid || !isClubValid || !isCategoryValid || !isFlightValid || !isPartnerValid) {
+    [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
     if (!partnerSection.classList.contains('hidden')) {
       partnerNameInput.classList.add('touched');
       partnerPhoneInput.classList.add('touched');
@@ -334,6 +355,9 @@ form.addEventListener('submit', async (e) => {
     name: nameInput.value.trim(),
     phone: '966' + phoneInput.value.trim(),
     email: emailInput.value.trim(),
+    iqama: iqamaInput.value.trim(),
+    gender: genderInput.value.trim(),
+    dob: dobInput.value.trim(),
     club: clubInput.value.trim(),
     category: categoryInput.value.trim(),
     flight: flightInput.value.trim(),
@@ -374,7 +398,7 @@ form.addEventListener('submit', async (e) => {
 
 function setSubmittingState(isSubmitting) {
   submitBtn.disabled = isSubmitting;
-  [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => inp.disabled = isSubmitting);
+  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => inp.disabled = isSubmitting);
 
   if (isSubmitting) {
     btnText.textContent = 'Submitting Entry...';
@@ -401,12 +425,13 @@ function showError(msg) {
 resetBtn.addEventListener('click', () => {
   form.reset();
 
+  genderCombobox.reset();
   categoryCombobox.reset();
   flightCombobox.reset();
 
   partnerSection.classList.add('hidden');
 
-  [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => {
+  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => {
     inp.classList.remove('touched');
     inp.disabled = false;
   });
