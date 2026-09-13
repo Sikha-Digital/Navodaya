@@ -120,6 +120,127 @@ body {
   transform: translateY(0);
 }
 
+/* Multi-Step Wizard Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 0 4px;
+  position: relative;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.step-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(15, 29, 60, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.step-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-icon {
+  background: var(--accent-primary);
+  color: #060f21;
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.step-item.active .step-text {
+  color: var(--accent-secondary);
+}
+
+.step-item.completed .step-icon {
+  background: var(--success-color);
+  color: #ffffff;
+  border-color: var(--success-color);
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background: rgba(212, 175, 55, 0.2);
+  margin: 0 10px;
+  transition: background 0.3s ease;
+}
+
+.step-line.active {
+  background: var(--accent-primary);
+}
+
+/* Step Container Mechanics */
+.form-step {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-step.active {
+  display: flex;
+  animation: stepFadeIn 0.35s ease forwards;
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Step Actions & Navigation Buttons */
+.step-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.back-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 18px;
+  background: rgba(15, 29, 60, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(30, 58, 138, 0.5);
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+}
+
+.next-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
 /* Animated Intro Splash Screen Styles */
 .intro-panel {
   text-align: center;

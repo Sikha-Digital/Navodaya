@@ -171,6 +171,60 @@ const resetBtn = document.getElementById('resetBtn');
 const generalError = document.getElementById('generalError');
 const errorMessage = document.getElementById('errorMessage');
 
+// Step Navigation Elements
+const step1 = document.getElementById('step1');
+const step2 = document.getElementById('step2');
+const stepTab1 = document.getElementById('stepTab1');
+const stepTab2 = document.getElementById('stepTab2');
+const stepLine = document.getElementById('stepLine');
+const nextStepBtn = document.getElementById('nextStepBtn');
+const prevStepBtn = document.getElementById('prevStepBtn');
+
+function validateStep1() {
+  const isNameValid = validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.');
+  const isPhoneValid = validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.');
+  const isEmailValid = validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.');
+  const isIqamaValid = validateInput(iqamaInput, document.getElementById('iqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter a 10-digit Iqama / ID number.');
+  const isGenderValid = validateInput(genderInput, document.getElementById('genderError'), null, 'Gender selection is required.');
+  const isDobValid = validateInput(dobInput, document.getElementById('dobError'), null, 'Date of Birth is required.');
+  const isClubValid = validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.');
+
+  if (!isNameValid || !isPhoneValid || !isEmailValid || !isIqamaValid || !isGenderValid || !isDobValid || !isClubValid) {
+    [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput].forEach(inp => inp.classList.add('touched'));
+    return false;
+  }
+  return true;
+}
+
+function goToStep(stepNum) {
+  if (stepNum === 2) {
+    if (!validateStep1()) return;
+    step1.classList.remove('active');
+    step2.classList.add('active');
+    stepTab1.classList.remove('active');
+    stepTab1.classList.add('completed');
+    stepTab2.classList.add('active');
+    stepLine.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    step2.classList.remove('active');
+    step1.classList.add('active');
+    stepTab2.classList.remove('active');
+    stepTab1.classList.remove('completed');
+    stepTab1.classList.add('active');
+    stepLine.classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+if (nextStepBtn) {
+  nextStepBtn.addEventListener('click', () => goToStep(2));
+}
+
+if (prevStepBtn) {
+  prevStepBtn.addEventListener('click', () => goToStep(1));
+}
+
 let introProgressTimer = null;
 let isIntroTransitioned = false;
 
@@ -389,13 +443,12 @@ form.addEventListener('submit', async (e) => {
 
   generalError.classList.add('hidden');
 
-  const isNameValid = validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.');
-  const isPhoneValid = validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.');
-  const isEmailValid = validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.');
-  const isIqamaValid = validateInput(iqamaInput, document.getElementById('iqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter a 10-digit Iqama / ID number.');
-  const isGenderValid = validateInput(genderInput, document.getElementById('genderError'), null, 'Gender selection is required.');
-  const isDobValid = validateInput(dobInput, document.getElementById('dobError'), null, 'Date of Birth is required.');
-  const isClubValid = validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.');
+  const isStep1Valid = validateStep1();
+  if (!isStep1Valid) {
+    goToStep(1);
+    return;
+  }
+
   const isCategoryValid = validateInput(categoryInput, document.getElementById('categoryError'), null, 'Event category selection is required.');
   const isFlightValid = validateInput(flightInput, document.getElementById('flightError'), null, 'Level selection is required.');
 
@@ -409,8 +462,8 @@ form.addEventListener('submit', async (e) => {
     isPartnerValid = isPNameValid && isPPhoneValid && isPIqamaValid && isPGenderValid && isPDobValid;
   }
 
-  if (!isNameValid || !isPhoneValid || !isEmailValid || !isIqamaValid || !isGenderValid || !isDobValid || !isClubValid || !isCategoryValid || !isFlightValid || !isPartnerValid) {
-    [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
+  if (!isCategoryValid || !isFlightValid || !isPartnerValid) {
+    [categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
     if (!partnerSection.classList.contains('hidden')) {
       [partnerNameInput, partnerPhoneInput, partnerIqamaInput, partnerGenderInput, partnerDobInput].forEach(inp => inp.classList.add('touched'));
     }
@@ -507,6 +560,8 @@ resetBtn.addEventListener('click', () => {
     inp.classList.remove('touched');
     inp.disabled = false;
   });
+
+  goToStep(1);
 
   successPanel.classList.remove('active');
 
