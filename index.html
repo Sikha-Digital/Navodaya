@@ -143,44 +143,47 @@
             <span class="error-text" id="iqamaError">10-digit Iqama / ID Number is required</span>
           </div>
 
-          <!-- Gender Combobox -->
-          <div class="input-group combobox" id="genderCombobox">
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 15v-6M9 12h6" />
-              </svg>
-              <input type="text" id="genderInput" required placeholder=" " autocomplete="off" readonly>
-              <label for="genderInput">Gender</label>
-              <button type="button" class="dropdown-toggle" aria-label="Toggle Gender Dropdown">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
+          <!-- Side-by-side Row for Gender and Date of Birth -->
+          <div class="form-row">
+            <!-- Gender Combobox -->
+            <div class="input-group combobox" id="genderCombobox">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 15v-6M9 12h6" />
                 </svg>
-              </button>
-              <ul class="dropdown-list" id="genderList">
-                <li data-value="Male">Male</li>
-                <li data-value="Female">Female</li>
-              </ul>
+                <input type="text" id="genderInput" required placeholder=" " autocomplete="off" readonly>
+                <label for="genderInput">Gender</label>
+                <button type="button" class="dropdown-toggle" aria-label="Toggle Gender Dropdown">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <ul class="dropdown-list" id="genderList">
+                  <li data-value="Male">Male</li>
+                  <li data-value="Female">Female</li>
+                </ul>
+              </div>
+              <span class="error-text" id="genderError">Gender is required</span>
             </div>
-            <span class="error-text" id="genderError">Gender selection is required</span>
-          </div>
 
-          <!-- Date of Birth Input Group -->
-          <div class="input-group">
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              <input type="date" id="dobInput" required placeholder=" " autocomplete="bday">
-              <label for="dobInput">Date of Birth (DOB)</label>
+            <!-- Date of Birth Input Group -->
+            <div class="input-group">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <input type="date" id="dobInput" required placeholder=" " autocomplete="bday">
+                <label for="dobInput">Date of Birth</label>
+              </div>
+              <span class="error-text" id="dobError">DOB is required</span>
             </div>
-            <span class="error-text" id="dobError">Date of Birth is required</span>
           </div>
 
           <!-- Country / City / Club Input Group -->
@@ -210,64 +213,67 @@
 
         <!-- STEP 2: Event Category & Partner Details -->
         <div id="step2" class="form-step">
-          <!-- Event Category Combobox -->
-          <div class="input-group combobox" id="categoryCombobox">
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                <path d="M4 22h16" />
-                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
-              </svg>
-              <input type="text" id="categoryInput" required placeholder=" " autocomplete="off" readonly>
-              <label for="categoryInput">Event Category</label>
-              <button type="button" class="dropdown-toggle" aria-label="Toggle Event Category Dropdown">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
+          <!-- Side-by-side Row for Event Category and Level / Flight -->
+          <div class="form-row">
+            <!-- Event Category Combobox -->
+            <div class="input-group combobox" id="categoryCombobox">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                  <path d="M4 22h16" />
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
                 </svg>
-              </button>
-              <ul class="dropdown-list" id="categoryList">
-                <li data-value="Men's Doubles" data-doubles="true">Men's Doubles</li>
-                <li data-value="Women's Doubles" data-doubles="true">Women's Doubles</li>
-                <li data-value="Mixed Doubles" data-doubles="true">Mixed Doubles</li>
-                <li data-value="Kids" data-doubles="true">Kids</li>
-              </ul>
+                <input type="text" id="categoryInput" required placeholder=" " autocomplete="off" readonly>
+                <label for="categoryInput">Event Category</label>
+                <button type="button" class="dropdown-toggle" aria-label="Toggle Event Category Dropdown">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <ul class="dropdown-list" id="categoryList">
+                  <li data-value="Men's Doubles" data-doubles="true">Men's Doubles</li>
+                  <li data-value="Women's Doubles" data-doubles="true">Women's Doubles</li>
+                  <li data-value="Mixed Doubles" data-doubles="true">Mixed Doubles</li>
+                  <li data-value="Kids" data-doubles="true">Kids</li>
+                </ul>
+              </div>
+              <span class="error-text" id="categoryError">Category is required</span>
             </div>
-            <span class="error-text" id="categoryError">Event category selection is required</span>
-          </div>
 
-          <!-- Flight / Division Combobox -->
-          <div class="input-group combobox" id="flightCombobox">
-            <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                </polygon>
-              </svg>
-              <input type="text" id="flightInput" required placeholder=" " autocomplete="off" readonly>
-              <label for="flightInput">Level / Flight</label>
-              <button type="button" class="dropdown-toggle" aria-label="Toggle Level Dropdown">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
+            <!-- Flight / Division Combobox -->
+            <div class="input-group combobox" id="flightCombobox">
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                  </polygon>
                 </svg>
-              </button>
-              <ul class="dropdown-list" id="flightList">
-                <li data-value="INTERNATIONAL PREMIERE CHAMPIONSHIP">INTERNATIONAL PREMIERE CHAMPIONSHIP</li>
-                <li data-value="F1">F1</li>
-                <li data-value="F2">F2</li>
-                <li data-value="F3">F3</li>
-                <li data-value="F4">F4</li>
-                <li data-value="F5">F5</li>
-                <li data-value="F6">F6</li>
-              </ul>
+                <input type="text" id="flightInput" required placeholder=" " autocomplete="off" readonly>
+                <label for="flightInput">Level / Flight</label>
+                <button type="button" class="dropdown-toggle" aria-label="Toggle Level Dropdown">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <ul class="dropdown-list" id="flightList">
+                  <li data-value="INTERNATIONAL PREMIERE CHAMPIONSHIP">INTERNATIONAL PREMIERE CHAMPIONSHIP</li>
+                  <li data-value="F1">F1</li>
+                  <li data-value="F2">F2</li>
+                  <li data-value="F3">F3</li>
+                  <li data-value="F4">F4</li>
+                  <li data-value="F5">F5</li>
+                  <li data-value="F6">F6</li>
+                </ul>
+              </div>
+              <span class="error-text" id="flightError">Level is required</span>
             </div>
-            <span class="error-text" id="flightError">Level selection is required</span>
           </div>
 
           <!-- Dynamic Doubles Partner Section -->
@@ -324,47 +330,50 @@
                 <input type="tel" id="partnerIqamaInput" placeholder=" " autocomplete="off" maxlength="10" pattern="[0-9]{10}">
                 <label for="partnerIqamaInput">Partner Iqama / ID Number</label>
               </div>
-              <span class="error-text" id="partnerIqamaError">Partner 10-digit Iqama / ID Number is required</span>
+              <span class="error-text" id="partnerIqamaError">Partner 10-digit Iqama is required</span>
             </div>
 
-            <!-- Partner Gender Combobox -->
-            <div class="input-group combobox" id="partnerGenderCombobox">
-              <div class="input-wrapper">
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 15v-6M9 12h6" />
-                </svg>
-                <input type="text" id="partnerGenderInput" placeholder=" " autocomplete="off" readonly>
-                <label for="partnerGenderInput">Partner Gender</label>
-                <button type="button" class="dropdown-toggle" aria-label="Toggle Partner Gender Dropdown">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
+            <!-- Side-by-side Row for Partner Gender and Partner DOB -->
+            <div class="form-row">
+              <!-- Partner Gender Combobox -->
+              <div class="input-group combobox" id="partnerGenderCombobox">
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 15v-6M9 12h6" />
                   </svg>
-                </button>
-                <ul class="dropdown-list" id="partnerGenderList">
-                  <li data-value="Male">Male</li>
-                  <li data-value="Female">Female</li>
-                </ul>
+                  <input type="text" id="partnerGenderInput" placeholder=" " autocomplete="off" readonly>
+                  <label for="partnerGenderInput">Partner Gender</label>
+                  <button type="button" class="dropdown-toggle" aria-label="Toggle Partner Gender Dropdown">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                  <ul class="dropdown-list" id="partnerGenderList">
+                    <li data-value="Male">Male</li>
+                    <li data-value="Female">Female</li>
+                  </ul>
+                </div>
+                <span class="error-text" id="partnerGenderError">Partner Gender is required</span>
               </div>
-              <span class="error-text" id="partnerGenderError">Partner Gender selection is required</span>
-            </div>
 
-            <!-- Partner Date of Birth Input Group -->
-            <div class="input-group">
-              <div class="input-wrapper">
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-                <input type="date" id="partnerDobInput" placeholder=" " autocomplete="off">
-                <label for="partnerDobInput">Partner Date of Birth (DOB)</label>
+              <!-- Partner Date of Birth Input Group -->
+              <div class="input-group">
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <input type="date" id="partnerDobInput" placeholder=" " autocomplete="off">
+                  <label for="partnerDobInput">Partner DOB</label>
+                </div>
+                <span class="error-text" id="partnerDobError">Partner DOB is required</span>
               </div>
-              <span class="error-text" id="partnerDobError">Partner Date of Birth is required</span>
             </div>
           </div>
 
