@@ -67,30 +67,40 @@ function doPost(e) {
       sheet = ss.insertSheet("Registrations");
     }
 
-    // 5. If sheet is new/empty, write header columns
+    // 5. Ensure header columns are complete (15 columns)
+    const headers = [
+      "Timestamp",
+      "Full Name",
+      "Phone Number",
+      "Email Address",
+      "Iqama / ID Number",
+      "Gender",
+      "Date of Birth",
+      "Country / Club",
+      "Event Category",
+      "Level / Flight",
+      "Partner Name",
+      "Partner Contact",
+      "Partner Iqama / ID Number",
+      "Partner Gender",
+      "Partner Date of Birth"
+    ];
+
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow([
-        "Timestamp",
-        "Full Name",
-        "Phone Number",
-        "Email Address",
-        "Iqama / ID Number",
-        "Gender",
-        "Date of Birth",
-        "Country / Club",
-        "Event Category",
-        "Level / Flight",
-        "Partner Name",
-        "Partner Contact",
-        "Partner Iqama / ID Number",
-        "Partner Gender",
-        "Partner Date of Birth"
-      ]);
-      // Style the header row (Bold text, medium-grey background)
+      sheet.appendRow(headers);
       const headerRange = sheet.getRange(1, 1, 1, 15);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#e5e7eb");
       sheet.setFrozenRows(1);
+    } else {
+      // Auto-update header row if existing sheet had fewer columns
+      if (sheet.getLastColumn() < 15) {
+        sheet.getRange(1, 1, 1, 15).setValues([headers]);
+        const headerRange = sheet.getRange(1, 1, 1, 15);
+        headerRange.setFontWeight("bold");
+        headerRange.setBackground("#e5e7eb");
+        sheet.setFrozenRows(1);
+      }
     }
 
     // 6. Check for duplicate phone number in current category
