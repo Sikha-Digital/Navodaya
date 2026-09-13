@@ -125,6 +125,17 @@ class SearchableCombobox {
     this.items.forEach(i => i.classList.remove('selected'));
     this.input.value = '';
   }
+
+  setValue(val) {
+    const item = this.items.find(i => i.getAttribute('data-value') === val);
+    if (item) {
+      this.input.value = val;
+      this.items.forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      this.input.dispatchEvent(new Event('input', { bubbles: true }));
+      this.input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
 }
 
 // DOM Elements
@@ -235,6 +246,18 @@ function checkDoublesCategory() {
       const el = document.getElementById(errId);
       if (el) el.textContent = '';
     });
+  }
+
+  // Auto-select gender based on event category selection
+  if (val === "Men's Doubles") {
+    genderCombobox.setValue('Male');
+    partnerGenderCombobox.setValue('Male');
+  } else if (val === "Women's Doubles") {
+    genderCombobox.setValue('Female');
+    partnerGenderCombobox.setValue('Female');
+  } else if (val === "Mixed Doubles") {
+    genderCombobox.reset();
+    partnerGenderCombobox.reset();
   }
 }
 
