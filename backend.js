@@ -1,16 +1,16 @@
 /**
- * Google Apps Script Backend for Registration Form
+ * Google Apps Script Backend for Navodaya Open 2026 Badminton Tournament
  * 
  * Instructions:
  * 1. Open Google Sheets (https://sheets.google.com).
- * 2. Create a new Spreadsheet and name it (e.g. "User Registrations").
+ * 2. Create a new Spreadsheet and name it (e.g. "Navodaya Open 2026 Registrations").
  * 3. Go to "Extensions" > "Apps Script".
  * 4. Delete any code in the editor, and paste this entire code block.
  * 5. Save the project (click the disk icon).
  * 6. Click "Deploy" > "New deployment" (top right).
  * 7. Click the gear icon (Select type) and choose "Web app".
  * 8. Set the settings:
- *    - Description: "Registration Form Backend"
+ *    - Description: "Navodaya Open 2026 Registration Backend"
  *    - Execute as: "Me (your-email@gmail.com)"
  *    - Who has access: "Anyone"
  * 9. Click "Deploy". Authorize permissions if prompted (Go to Advanced > Go to Untitled Project (unsafe) > Allow).
@@ -37,17 +37,20 @@ function doPost(e) {
     }
 
     // 2. Parse the JSON payload sent from the form
-    // Note: We sent it as 'text/plain' to bypass CORS preflight checks, which makes e.postData.contents a raw JSON string.
     const data = JSON.parse(e.postData.contents);
     
     const name = data.name ? String(data.name).trim() : '';
     const phone = data.phone ? String(data.phone).trim() : '';
-    const area = data.area ? String(data.area).trim() : '';
-    const unit = data.unit ? String(data.unit).trim() : '';
+    const email = data.email ? String(data.email).trim() : '';
+    const club = data.club ? String(data.club).trim() : '';
+    const category = data.category ? String(data.category).trim() : '';
+    const flight = data.flight ? String(data.flight).trim() : '';
+    const partnerName = data.partnerName ? String(data.partnerName).trim() : '';
+    const partnerPhone = data.partnerPhone ? String(data.partnerPhone).trim() : '';
 
     // 3. Validation
-    if (!name || !phone || !area || !unit) {
-      return jsonResponse('error', 'Validation failed. All fields (name, phone, area, unit) are required.');
+    if (!name || !phone || !email || !category || !flight) {
+      return jsonResponse('error', 'Validation failed. Please ensure all required fields are filled.');
     }
 
     // 4. Open the active spreadsheet and the sheet named "Registrations" (or create it if it doesn't exist)
@@ -60,20 +63,34 @@ function doPost(e) {
 
     // 5. If sheet is new/empty, write header columns
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Timestamp", "Full Name", "Phone Number", "Area / Region", "Unit / Block"]);
+      sheet.appendRow([
+        "Timestamp",
+        "Full Name",
+        "Phone Number",
+        "Email Address",
+        "Country / Club",
+        "Event Category",
+        "Level / Flight",
+        "Partner Name",
+        "Partner Contact"
+      ]);
       // Style the header row (Bold text, medium-grey background)
-      const headerRange = sheet.getRange(1, 1, 1, 5);
+      const headerRange = sheet.getRange(1, 1, 1, 9);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#e5e7eb");
       sheet.setFrozenRows(1);
     }
 
-    // 6. Check for duplicate phone number
+    // 6. Check for duplicate phone number in current category
     if (sheet.getLastRow() > 1) {
-      const phoneColumn = sheet.getRange(2, 3, sheet.getLastRow() - 1, 1).getValues();
-      const phoneExists = phoneColumn.some(row => String(row[0]).trim() === phone);
-      if (phoneExists) {
-        return jsonResponse('error', 'This mobile number is already registered.');
+      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 6).getValues();
+      const duplicateExists = rows.some(row => {
+        const rowPhone = String(row[2]).trim();
+        const rowCategory = String(row[5]).trim();
+        return rowPhone === phone && rowCategory === category;
+      });
+      if (duplicateExists) {
+        return jsonResponse('error', 'This mobile number is already registered for this event category.');
       }
     }
 
@@ -81,19 +98,28 @@ function doPost(e) {
     const timestamp = Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), "yyyy-MM-dd HH:mm:ss");
 
     // 8. Append registration data as a new row
-    sheet.appendRow([timestamp, name, phone, area, unit]);
+    sheet.appendRow([
+      timestamp,
+      name,
+      phone,
+      email,
+      club,
+      category,
+      flight,
+      partnerName,
+      partnerPhone
+    ]);
 
     // 9. Auto-adjust columns to fit content widths
-    sheet.autoResizeColumns(1, 5);
+    sheet.autoResizeColumns(1, 9);
 
     // 10. Return success status
-    return jsonResponse('success', 'Registration saved successfully.', {
+    return jsonResponse('success', 'Tournament entry saved successfully.', {
       timestamp: timestamp,
       insertedRow: sheet.getLastRow()
     });
 
   } catch (error) {
-    // Return error status if anything breaks
     return jsonResponse('error', 'Internal server error: ' + error.toString());
   }
 }
@@ -104,6 +130,8 @@ function doPost(e) {
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     status: 'success',
-    message: 'Registration API endpoint is active. Use HTTP POST to send registrations.'
+    message: 'Navodaya Open 2026 Registration API endpoint is active. Use HTTP POST to send registrations.'
   })).setMimeType(ContentService.MimeType.JSON);
 }
+
+

@@ -1,9 +1,9 @@
 /**
- * Mobile Registration Form - Frontend Logic
+ * Navodaya Open 2026 - International Badminton Tournament Registration Frontend
  */
 
 // IMPORTANT: Replace this placeholder with your deployed Google Apps Script Web App URL!
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkie_5Snmq2nW2pRnsJG9E8ijGxmVBSMt51VuuCQL5aRtvhomkma2tsM5l3jsWLCMO/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwj9BachqS-O30uiqF8-x-KkFqzmjrpL9KGQbG6lokJl3n80X4jnr9QWSgnxPgRrD0U/exec';
 
 // Dropdown Component Controller (scroll & select, no search filter)
 class SearchableCombobox {
@@ -11,12 +11,14 @@ class SearchableCombobox {
     this.combobox = document.getElementById(comboboxId);
     this.input = document.getElementById(inputId);
     this.list = document.getElementById(listId);
-    this.toggleBtn = this.combobox.querySelector('.dropdown-toggle');
+    this.toggleBtn = this.combobox ? this.combobox.querySelector('.dropdown-toggle') : null;
     this.items = [];
 
     this.isOpen = false;
 
-    this.init();
+    if (this.combobox && this.input && this.list) {
+      this.init();
+    }
   }
 
   init() {
@@ -26,11 +28,13 @@ class SearchableCombobox {
     });
 
     // Toggle dropdown when clicking the toggle button
-    this.toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      this.isOpen ? this.close() : this.open();
-    });
+    if (this.toggleBtn) {
+      this.toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.isOpen ? this.close() : this.open();
+      });
+    }
 
     // Initial setup of list item listeners
     this.setupItems();
@@ -54,7 +58,6 @@ class SearchableCombobox {
       }, { passive: true });
 
       // On release: if list didn't scroll (< 5px), it was a tap → select
-      // If list scrolled, user was scrolling → ignore
       item.addEventListener('touchend', (e) => {
         const scrolled = Math.abs(this.list.scrollTop - scrollTopAtStart);
         if (scrolled < 5) {
@@ -88,10 +91,9 @@ class SearchableCombobox {
     this.isOpen = true;
     this.combobox.classList.add('open');
 
-    // Scroll selected item into view within the list container (NOT the page)
+    // Scroll selected item into view within the list container
     const selected = this.list.querySelector('li.selected');
     if (selected) {
-      // Use a small timeout to let the CSS transition open first
       setTimeout(() => {
         this.list.scrollTop = selected.offsetTop - this.list.clientHeight / 2 + selected.clientHeight / 2;
       }, 50);
@@ -115,11 +117,13 @@ class SearchableCombobox {
     item.classList.add('selected');
 
     this.close();
-    this.input.dispatchEvent(new Event('input'));
+    this.input.dispatchEvent(new Event('input', { bubbles: true }));
+    this.input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   reset() {
     this.items.forEach(i => i.classList.remove('selected'));
+    this.input.value = '';
   }
 }
 
@@ -127,12 +131,22 @@ class SearchableCombobox {
 const form = document.getElementById('registrationForm');
 const nameInput = document.getElementById('nameInput');
 const phoneInput = document.getElementById('phoneInput');
-const areaInput = document.getElementById('areaInput');
-const unitInput = document.getElementById('unitInput');
+const emailInput = document.getElementById('emailInput');
+const clubInput = document.getElementById('clubInput');
+const categoryInput = document.getElementById('categoryInput');
+const flightInput = document.getElementById('flightInput');
+
+const partnerSection = document.getElementById('partnerSection');
+const partnerNameInput = document.getElementById('partnerNameInput');
+const partnerPhoneInput = document.getElementById('partnerPhoneInput');
 
 const submitBtn = document.getElementById('submitBtn');
 const btnText = submitBtn.querySelector('.btn-text');
 const spinner = submitBtn.querySelector('.spinner');
+
+const introPanel = document.getElementById('introPanel');
+const enterPortalBtn = document.getElementById('enterPortalBtn');
+const introProgressBar = document.getElementById('introProgressBar');
 
 const formPanel = document.getElementById('formPanel');
 const successPanel = document.getElementById('successPanel');
@@ -141,106 +155,80 @@ const resetBtn = document.getElementById('resetBtn');
 const generalError = document.getElementById('generalError');
 const errorMessage = document.getElementById('errorMessage');
 
-// Initialize searchable dropdown components
-const areaCombobox = new SearchableCombobox('areaCombobox', 'areaInput', 'areaList');
-const unitCombobox = new SearchableCombobox('unitCombobox', 'unitInput', 'unitList');
+let introProgressTimer = null;
+let isIntroTransitioned = false;
 
-// Area to Unit mapping object
-const AREA_UNITS = {
-  "Dammam Town": [
-    "Center",
-    "Al Dawazir",
-    "Adama",
-    "Kanoo",
-    "Ladies Market",
-    "Amamrah",
-    "Madinath al umal",
-    "Abdullah Faud",
-    "AC Member"
-  ],
-  "Toyota": [
-    "Khaleej 1",
-    "Khaleej 2",
-    "City",
-    "Mubarakiya",
-    "Nakkeel",
-    "Anood",
-    "Badiya",
-    "Jalawiya",
-    "Toyota",
-    "AC Member"
-  ],
-  "Della": [
-    "Bandhariya",
-    "Kodariya North",
-    "Kodariya South",
-    "Della",
-    "Della Sanayya East",
-    "Della Sanayya West",
-    "AC Member"
-  ],
-  "Faisaliya": [
-    "Ninety One",
-    "Faisaliya",
-    "Souq Khanam",
-    "Thirty Seven",
-    "AC Member"
-  ],
-  "Sihath": [
-    "Sihat Town",
-    "Sihat North",
-    "Anak",
-    "Ummul Hammam",
-    "Nabiya",
-    "Al Aujam",
-    "AC Member"
-  ],
-  "Qatif": [
-    "Tharoth",
-    "Thurqiya",
-    "North",
-    "Post Office",
-    "Jaroodiya",
-    "Market",
-    "Majidiya",
-    "South",
-    "Mahadood",
-    "AC Member"
-  ],
-  "Regional Committee": [
-    "RC Member"
-  ],
-  "Dammam Family": [
-    "Dammam Town",
-    "Jalawiya",
-    "Gazaz",
-    "Badiya",
-    "Della",
-    "Qatif"
-  ],
-  "KVCC": [
-    "KVCC Member"
-  ]
-};
+function transitionToForm() {
+  if (isIntroTransitioned) return;
+  isIntroTransitioned = true;
+  if (introProgressTimer) clearInterval(introProgressTimer);
 
-// Bind Area changes to dynamically update Unit dropdown options
-areaInput.addEventListener('input', () => {
-  const selectedArea = areaInput.value.trim();
-  const matchingUnits = AREA_UNITS[selectedArea];
-
-  // Always reset unit when area changes
-  unitInput.value = '';
-  unitCombobox.reset();
-
-  if (matchingUnits) {
-    unitCombobox.updateOptions(matchingUnits);
-  } else {
-    unitCombobox.updateOptions([]);
+  if (introPanel) {
+    introPanel.style.opacity = '0';
+    introPanel.style.transform = 'translateY(-20px)';
   }
-});
 
-// Enforce exactly 9 digits for phone numbers (prefix +966 will be prepended on submit)
-const PHONE_REGEX = /^[0-9]{9}$/;
+  setTimeout(() => {
+    if (introPanel) introPanel.classList.remove('active');
+    if (formPanel) formPanel.classList.add('active');
+    setTimeout(() => {
+      if (nameInput) nameInput.focus();
+    }, 150);
+  }, 400);
+}
+
+if (enterPortalBtn) {
+  enterPortalBtn.addEventListener('click', transitionToForm);
+}
+
+function startIntroProgress() {
+  if (!introProgressBar) return;
+  let step = 0;
+  const interval = 25;
+  const totalSteps = 2400 / interval;
+
+  introProgressTimer = setInterval(() => {
+    step++;
+    const progress = (step / totalSteps) * 100;
+    introProgressBar.style.width = `${Math.min(progress, 100)}%`;
+    if (step >= totalSteps) {
+      transitionToForm();
+    }
+  }, interval);
+}
+
+// Initialize combobox components
+const categoryCombobox = new SearchableCombobox('categoryCombobox', 'categoryInput', 'categoryList');
+const flightCombobox = new SearchableCombobox('flightCombobox', 'flightInput', 'flightList');
+
+// Category selection change -> show/hide Doubles Partner card
+categoryInput.addEventListener('input', checkDoublesCategory);
+categoryInput.addEventListener('change', checkDoublesCategory);
+
+function checkDoublesCategory() {
+  const val = categoryInput.value.trim();
+  const isDoubles = val.toLowerCase().includes('doubles') || val.toLowerCase().includes('kids') || val.length > 0;
+
+  if (isDoubles) {
+    partnerSection.classList.remove('hidden');
+    partnerNameInput.setAttribute('required', 'required');
+    partnerPhoneInput.setAttribute('required', 'required');
+  } else {
+    partnerSection.classList.add('hidden');
+    partnerNameInput.removeAttribute('required');
+    partnerPhoneInput.removeAttribute('required');
+    partnerNameInput.value = '';
+    partnerPhoneInput.value = '';
+    partnerNameInput.classList.remove('touched');
+    partnerPhoneInput.classList.remove('touched');
+    document.getElementById('partnerNameError').textContent = '';
+    document.getElementById('partnerPhoneError').textContent = '';
+  }
+}
+
+// Regex Validations
+const PHONE_REGEX = /^[0-9]{9,15}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Validates a single input field
@@ -250,10 +238,10 @@ function validateInput(input, errorElement, validationFn, defaultMsg) {
   let isValid = true;
   let customMessage = defaultMsg;
 
-  if (input.required && !value) {
+  if (input.hasAttribute('required') && !value) {
     isValid = false;
-    customMessage = `${input.previousElementSibling ? '' : 'This field'} is required.`;
-  } else if (validationFn && !validationFn(value)) {
+    customMessage = defaultMsg || 'This field is required.';
+  } else if (value && validationFn && !validationFn(value)) {
     isValid = false;
   }
 
@@ -273,72 +261,98 @@ function validateInput(input, errorElement, validationFn, defaultMsg) {
   return isValid;
 }
 
-// Attach event listeners for real-time validation on blur/input
-nameInput.addEventListener('blur', () => validateInput(nameInput, document.getElementById('nameError'), null, 'Name is required.'));
-nameInput.addEventListener('input', () => nameInput.classList.contains('touched') && validateInput(nameInput, document.getElementById('nameError'), null, 'Name is required.'));
+// Event Listeners for Validation
+nameInput.addEventListener('blur', () => validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.'));
+nameInput.addEventListener('input', () => nameInput.classList.contains('touched') && validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.'));
 
-phoneInput.addEventListener('blur', () => validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter exactly 9 digits.'));
+phoneInput.addEventListener('blur', () => validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.'));
 phoneInput.addEventListener('input', () => {
-  // Enforce numbers only (strip any non-numeric input)
   phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
   if (phoneInput.classList.contains('touched')) {
-    validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter exactly 9 digits.');
+    validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.');
   }
 });
 
-areaInput.addEventListener('blur', () => validateInput(areaInput, document.getElementById('areaError'), null, 'Select Area is required.'));
-areaInput.addEventListener('input', () => areaInput.classList.contains('touched') && validateInput(areaInput, document.getElementById('areaError'), null, 'Select Area is required.'));
+emailInput.addEventListener('blur', () => validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.'));
+emailInput.addEventListener('input', () => emailInput.classList.contains('touched') && validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.'));
 
-unitInput.addEventListener('blur', () => validateInput(unitInput, document.getElementById('unitError'), null, 'Select Unit is required.'));
-unitInput.addEventListener('input', () => unitInput.classList.contains('touched') && validateInput(unitInput, document.getElementById('unitError'), null, 'Select Unit is required.'));
+clubInput.addEventListener('blur', () => validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.'));
+clubInput.addEventListener('input', () => clubInput.classList.contains('touched') && validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.'));
+
+categoryInput.addEventListener('blur', () => validateInput(categoryInput, document.getElementById('categoryError'), null, 'Event category selection is required.'));
+categoryInput.addEventListener('input', () => categoryInput.classList.contains('touched') && validateInput(categoryInput, document.getElementById('categoryError'), null, 'Event category selection is required.'));
+
+flightInput.addEventListener('blur', () => validateInput(flightInput, document.getElementById('flightError'), null, 'Level selection is required.'));
+flightInput.addEventListener('input', () => flightInput.classList.contains('touched') && validateInput(flightInput, document.getElementById('flightError'), null, 'Level selection is required.'));
+
+partnerNameInput.addEventListener('blur', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerNameInput, document.getElementById('partnerNameError'), null, 'Partner Name is required for Doubles.');
+  }
+});
+
+partnerPhoneInput.addEventListener('blur', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerPhoneInput, document.getElementById('partnerPhoneError'), null, 'Partner Contact Number is required.');
+  }
+});
 
 /**
  * Handle form submission
  */
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
-  // Hide general error initially
+
   generalError.classList.add('hidden');
 
-  // Trigger validation across all fields
-  const isNameValid = validateInput(nameInput, document.getElementById('nameError'), null, 'Name is required.');
-  const isPhoneValid = validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter exactly 9 digits.');
-  const isAreaValid = validateInput(areaInput, document.getElementById('areaError'), null, 'Select Area is required.');
-  const isUnitValid = validateInput(unitInput, document.getElementById('unitError'), null, 'Select Unit is required.');
+  const isNameValid = validateInput(nameInput, document.getElementById('nameError'), null, 'Full Name is required.');
+  const isPhoneValid = validateInput(phoneInput, document.getElementById('phoneError'), (val) => PHONE_REGEX.test(val), 'Please enter 9 digits.');
+  const isEmailValid = validateInput(emailInput, document.getElementById('emailError'), (val) => EMAIL_REGEX.test(val), 'Please enter a valid email address.');
+  const isClubValid = validateInput(clubInput, document.getElementById('clubError'), null, 'Country or Club Name is required.');
+  const isCategoryValid = validateInput(categoryInput, document.getElementById('categoryError'), null, 'Event category selection is required.');
+  const isFlightValid = validateInput(flightInput, document.getElementById('flightError'), null, 'Level selection is required.');
 
-  // If any input is invalid, abort submit
-  if (!isNameValid || !isPhoneValid || !isAreaValid || !isUnitValid) {
-    // Add touched to all inputs so styling is updated
-    [nameInput, phoneInput, areaInput, unitInput].forEach(inp => inp.classList.add('touched'));
+  let isPartnerValid = true;
+  if (!partnerSection.classList.contains('hidden')) {
+    const isPNameValid = validateInput(partnerNameInput, document.getElementById('partnerNameError'), null, 'Partner Name is required for Doubles.');
+    const isPPhoneValid = validateInput(partnerPhoneInput, document.getElementById('partnerPhoneError'), null, 'Partner Contact Number is required.');
+    isPartnerValid = isPNameValid && isPPhoneValid;
+  }
+
+  if (!isNameValid || !isPhoneValid || !isEmailValid || !isClubValid || !isCategoryValid || !isFlightValid || !isPartnerValid) {
+    [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
+    if (!partnerSection.classList.contains('hidden')) {
+      partnerNameInput.classList.add('touched');
+      partnerPhoneInput.classList.add('touched');
+    }
     return;
   }
 
-  // Visual feedback: disable form and show spinner
   setSubmittingState(true);
 
-  // Prepare payload
   const payload = {
     name: nameInput.value.trim(),
     phone: '966' + phoneInput.value.trim(),
-    area: areaInput.value.trim(),
-    unit: unitInput.value.trim()
+    email: emailInput.value.trim(),
+    club: clubInput.value.trim(),
+    category: categoryInput.value.trim(),
+    flight: flightInput.value.trim(),
+    partnerName: partnerSection.classList.contains('hidden') ? '' : partnerNameInput.value.trim(),
+    partnerPhone: partnerSection.classList.contains('hidden') ? '' : partnerPhoneInput.value.trim()
   };
 
-  // Warning check if user did not update the URL
-  if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL') {
-    showError("Configuration Required: Please replace SCRIPT_URL with your actual Google Apps Script Web App URL.");
+  if (!SCRIPT_URL || SCRIPT_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL')) {
+    showError("Configuration Required: Please set SCRIPT_URL with your Google Apps Script Web App URL.");
     setSubmittingState(false);
     return;
   }
 
   try {
-    // Use standard CORS request with redirect follow (Apps Script Web Apps redirect to Google CDN)
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'cors',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8', // Using text/plain avoids CORS preflight OPTIONS request trigger, which can sometimes fail or block on simple web pages.
+        'Content-Type': 'text/plain;charset=utf-8',
       },
       body: JSON.stringify(payload)
     });
@@ -352,76 +366,60 @@ form.addEventListener('submit', async (e) => {
     }
   } catch (error) {
     console.error('Submission failed:', error);
-    showError('Unable to connect. Please check your internet connection or Apps Script deployment configuration.');
+    showError(error.message || 'Unable to connect. Please verify internet connection and Apps Script deployment settings.');
   } finally {
     setSubmittingState(false);
   }
 });
 
-/**
- * Toggle button submitting states
- */
 function setSubmittingState(isSubmitting) {
   submitBtn.disabled = isSubmitting;
-  [nameInput, phoneInput, areaInput, unitInput].forEach(inp => inp.disabled = isSubmitting);
-  
+  [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => inp.disabled = isSubmitting);
+
   if (isSubmitting) {
-    btnText.textContent = 'Submitting...';
+    btnText.textContent = 'Submitting Entry...';
     spinner.classList.remove('hidden');
   } else {
-    btnText.textContent = 'Submit Registration';
+    btnText.textContent = 'Submit Tournament Entry';
     spinner.classList.add('hidden');
   }
 }
 
-/**
- * Display the success panel with slide transitions
- */
 function showSuccess() {
   formPanel.classList.remove('active');
-  
-  // Brief timeout to let the fade-out finish before fading in success
   setTimeout(() => {
     successPanel.classList.add('active');
   }, 300);
 }
 
-/**
- * Show a general error message
- */
 function showError(msg) {
   errorMessage.textContent = msg;
   generalError.classList.remove('hidden');
   generalError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-/**
- * Reset form fields and panels to clean state
- */
 resetBtn.addEventListener('click', () => {
-  // Clear inputs
   form.reset();
-  
-  // Reset combobox selections
-  areaCombobox.reset();
-  unitCombobox.reset();
-  
-  // Remove touched styling classes
-  [nameInput, phoneInput, areaInput, unitInput].forEach(inp => {
+
+  categoryCombobox.reset();
+  flightCombobox.reset();
+
+  partnerSection.classList.add('hidden');
+
+  [nameInput, phoneInput, emailInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => {
     inp.classList.remove('touched');
     inp.disabled = false;
   });
 
-  // Switch panels
   successPanel.classList.remove('active');
-  
+
   setTimeout(() => {
     formPanel.classList.add('active');
     generalError.classList.add('hidden');
   }, 300);
 });
 
-// Automatically focus Name input on load
 window.addEventListener('DOMContentLoaded', () => {
-  nameInput.focus();
+  startIntroProgress();
 });
+
