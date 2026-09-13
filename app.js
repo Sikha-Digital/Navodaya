@@ -142,6 +142,9 @@ const flightInput = document.getElementById('flightInput');
 const partnerSection = document.getElementById('partnerSection');
 const partnerNameInput = document.getElementById('partnerNameInput');
 const partnerPhoneInput = document.getElementById('partnerPhoneInput');
+const partnerIqamaInput = document.getElementById('partnerIqamaInput');
+const partnerGenderInput = document.getElementById('partnerGenderInput');
+const partnerDobInput = document.getElementById('partnerDobInput');
 
 const submitBtn = document.getElementById('submitBtn');
 const btnText = submitBtn.querySelector('.btn-text');
@@ -201,6 +204,7 @@ function startIntroProgress() {
 
 // Initialize combobox components
 const genderCombobox = new SearchableCombobox('genderCombobox', 'genderInput', 'genderList');
+const partnerGenderCombobox = new SearchableCombobox('partnerGenderCombobox', 'partnerGenderInput', 'partnerGenderList');
 const categoryCombobox = new SearchableCombobox('categoryCombobox', 'categoryInput', 'categoryList');
 const flightCombobox = new SearchableCombobox('flightCombobox', 'flightInput', 'flightList');
 
@@ -216,16 +220,21 @@ function checkDoublesCategory() {
     partnerSection.classList.remove('hidden');
     partnerNameInput.setAttribute('required', 'required');
     partnerPhoneInput.setAttribute('required', 'required');
+    partnerIqamaInput.setAttribute('required', 'required');
+    partnerGenderInput.setAttribute('required', 'required');
+    partnerDobInput.setAttribute('required', 'required');
   } else {
     partnerSection.classList.add('hidden');
-    partnerNameInput.removeAttribute('required');
-    partnerPhoneInput.removeAttribute('required');
-    partnerNameInput.value = '';
-    partnerPhoneInput.value = '';
-    partnerNameInput.classList.remove('touched');
-    partnerPhoneInput.classList.remove('touched');
-    document.getElementById('partnerNameError').textContent = '';
-    document.getElementById('partnerPhoneError').textContent = '';
+    [partnerNameInput, partnerPhoneInput, partnerIqamaInput, partnerGenderInput, partnerDobInput].forEach(inp => {
+      inp.removeAttribute('required');
+      inp.value = '';
+      inp.classList.remove('touched');
+    });
+    partnerGenderCombobox.reset();
+    ['partnerNameError', 'partnerPhoneError', 'partnerIqamaError', 'partnerGenderError', 'partnerDobError'].forEach(errId => {
+      const el = document.getElementById(errId);
+      if (el) el.textContent = '';
+    });
   }
 }
 
@@ -315,6 +324,40 @@ partnerPhoneInput.addEventListener('blur', () => {
   }
 });
 
+partnerIqamaInput.addEventListener('blur', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerIqamaInput, document.getElementById('partnerIqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter partner 10-digit Iqama / ID number.');
+  }
+});
+partnerIqamaInput.addEventListener('input', () => {
+  partnerIqamaInput.value = partnerIqamaInput.value.replace(/[^0-9]/g, '');
+  if (!partnerSection.classList.contains('hidden') && partnerIqamaInput.classList.contains('touched')) {
+    validateInput(partnerIqamaInput, document.getElementById('partnerIqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter partner 10-digit Iqama / ID number.');
+  }
+});
+
+partnerGenderInput.addEventListener('blur', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerGenderInput, document.getElementById('partnerGenderError'), null, 'Partner Gender selection is required.');
+  }
+});
+partnerGenderInput.addEventListener('change', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerGenderInput, document.getElementById('partnerGenderError'), null, 'Partner Gender selection is required.');
+  }
+});
+
+partnerDobInput.addEventListener('blur', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerDobInput, document.getElementById('partnerDobError'), null, 'Partner Date of Birth is required.');
+  }
+});
+partnerDobInput.addEventListener('change', () => {
+  if (!partnerSection.classList.contains('hidden')) {
+    validateInput(partnerDobInput, document.getElementById('partnerDobError'), null, 'Partner Date of Birth is required.');
+  }
+});
+
 /**
  * Handle form submission
  */
@@ -337,14 +380,16 @@ form.addEventListener('submit', async (e) => {
   if (!partnerSection.classList.contains('hidden')) {
     const isPNameValid = validateInput(partnerNameInput, document.getElementById('partnerNameError'), null, 'Partner Name is required for Doubles.');
     const isPPhoneValid = validateInput(partnerPhoneInput, document.getElementById('partnerPhoneError'), null, 'Partner Contact Number is required.');
-    isPartnerValid = isPNameValid && isPPhoneValid;
+    const isPIqamaValid = validateInput(partnerIqamaInput, document.getElementById('partnerIqamaError'), (val) => IQAMA_REGEX.test(val), 'Please enter partner 10-digit Iqama / ID number.');
+    const isPGenderValid = validateInput(partnerGenderInput, document.getElementById('partnerGenderError'), null, 'Partner Gender selection is required.');
+    const isPDobValid = validateInput(partnerDobInput, document.getElementById('partnerDobError'), null, 'Partner Date of Birth is required.');
+    isPartnerValid = isPNameValid && isPPhoneValid && isPIqamaValid && isPGenderValid && isPDobValid;
   }
 
   if (!isNameValid || !isPhoneValid || !isEmailValid || !isIqamaValid || !isGenderValid || !isDobValid || !isClubValid || !isCategoryValid || !isFlightValid || !isPartnerValid) {
     [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput].forEach(inp => inp.classList.add('touched'));
     if (!partnerSection.classList.contains('hidden')) {
-      partnerNameInput.classList.add('touched');
-      partnerPhoneInput.classList.add('touched');
+      [partnerNameInput, partnerPhoneInput, partnerIqamaInput, partnerGenderInput, partnerDobInput].forEach(inp => inp.classList.add('touched'));
     }
     return;
   }
@@ -362,7 +407,10 @@ form.addEventListener('submit', async (e) => {
     category: categoryInput.value.trim(),
     flight: flightInput.value.trim(),
     partnerName: partnerSection.classList.contains('hidden') ? '' : partnerNameInput.value.trim(),
-    partnerPhone: partnerSection.classList.contains('hidden') ? '' : partnerPhoneInput.value.trim()
+    partnerPhone: partnerSection.classList.contains('hidden') ? '' : partnerPhoneInput.value.trim(),
+    partnerIqama: partnerSection.classList.contains('hidden') ? '' : partnerIqamaInput.value.trim(),
+    partnerGender: partnerSection.classList.contains('hidden') ? '' : partnerGenderInput.value.trim(),
+    partnerDob: partnerSection.classList.contains('hidden') ? '' : partnerDobInput.value.trim()
   };
 
   if (!SCRIPT_URL || SCRIPT_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL')) {
@@ -398,7 +446,7 @@ form.addEventListener('submit', async (e) => {
 
 function setSubmittingState(isSubmitting) {
   submitBtn.disabled = isSubmitting;
-  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => inp.disabled = isSubmitting);
+  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput, partnerIqamaInput, partnerGenderInput, partnerDobInput].forEach(inp => inp.disabled = isSubmitting);
 
   if (isSubmitting) {
     btnText.textContent = 'Submitting Entry...';
@@ -426,12 +474,13 @@ resetBtn.addEventListener('click', () => {
   form.reset();
 
   genderCombobox.reset();
+  partnerGenderCombobox.reset();
   categoryCombobox.reset();
   flightCombobox.reset();
 
   partnerSection.classList.add('hidden');
 
-  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput].forEach(inp => {
+  [nameInput, phoneInput, emailInput, iqamaInput, genderInput, dobInput, clubInput, categoryInput, flightInput, partnerNameInput, partnerPhoneInput, partnerIqamaInput, partnerGenderInput, partnerDobInput].forEach(inp => {
     inp.classList.remove('touched');
     inp.disabled = false;
   });

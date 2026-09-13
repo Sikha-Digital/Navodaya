@@ -50,6 +50,9 @@ function doPost(e) {
     const flight = data.flight ? String(data.flight).trim() : '';
     const partnerName = data.partnerName ? String(data.partnerName).trim() : '';
     const partnerPhone = data.partnerPhone ? String(data.partnerPhone).trim() : '';
+    const partnerIqama = data.partnerIqama ? String(data.partnerIqama).trim() : '';
+    const partnerGender = data.partnerGender ? String(data.partnerGender).trim() : '';
+    const partnerDob = data.partnerDob ? String(data.partnerDob).trim() : '';
 
     // 3. Validation
     if (!name || !phone || !email || !iqama || !gender || !dob || !category || !flight) {
@@ -78,10 +81,13 @@ function doPost(e) {
         "Event Category",
         "Level / Flight",
         "Partner Name",
-        "Partner Contact"
+        "Partner Contact",
+        "Partner Iqama / ID Number",
+        "Partner Gender",
+        "Partner Date of Birth"
       ]);
       // Style the header row (Bold text, medium-grey background)
-      const headerRange = sheet.getRange(1, 1, 1, 12);
+      const headerRange = sheet.getRange(1, 1, 1, 15);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#e5e7eb");
       sheet.setFrozenRows(1);
@@ -116,11 +122,14 @@ function doPost(e) {
       category,
       flight,
       partnerName,
-      partnerPhone
+      partnerPhone,
+      partnerIqama,
+      partnerGender,
+      partnerDob
     ]);
 
     // 9. Auto-adjust columns to fit content widths
-    sheet.autoResizeColumns(1, 12);
+    sheet.autoResizeColumns(1, 15);
 
     // 10. Return success status
     return jsonResponse('success', 'Tournament entry saved successfully.', {
