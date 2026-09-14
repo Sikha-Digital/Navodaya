@@ -163,16 +163,17 @@ function doPost(e) {
             categoryCount++;
             existingFlights.push(rowFlight);
 
-            // A) Check duplicate category
+            // A) Check duplicate category registration for same player
             if (rowCategory === category) {
-              return `${playerNameLabel} (Iqama/ID: ${playerId}) is already registered in the event category "${category}".`;
+              const role = isMain ? 'Main Player' : 'Co-Player / Partner';
+              return `Registration blocked: ${playerNameLabel} (Iqama/ID: ${playerId}) is already registered in event category "${category}" (as ${role}).`;
             }
           }
         }
 
-        // B) Check max 3 categories
+        // B) Check maximum 3 event categories per player (Main or Co-Player)
         if (categoryCount >= 3) {
-          return `${playerNameLabel} (Iqama/ID: ${playerId}) has already reached the maximum limit of 3 event category entries.`;
+          return `Registration blocked: ${playerNameLabel} (Iqama/ID: ${playerId}) has already reached the maximum limit of 3 event category entries in this tournament (registered as Main Player or Co-Player).`;
         }
 
         // C) Check nearest level requirement (within 1 flight step up or down of nearest existing entry)
