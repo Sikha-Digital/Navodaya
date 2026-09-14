@@ -231,8 +231,8 @@
 
           <!-- Side-by-side Row for Nationality and City / Club Name -->
           <div class="form-row">
-            <!-- Nationality Input Group -->
-            <div class="input-group">
+            <!-- Nationality Combobox -->
+            <div class="input-group combobox" id="nationalityCombobox">
               <div class="input-wrapper">
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
@@ -241,6 +241,64 @@
                 </svg>
                 <input type="text" id="nationalityInput" required placeholder=" " autocomplete="off">
                 <label for="nationalityInput">Nationality</label>
+                <button type="button" class="dropdown-toggle" aria-label="Toggle Nationality Dropdown">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <ul class="dropdown-list" id="nationalityList">
+                  <li data-value="Saudi Arabia">Saudi Arabia</li>
+                  <li data-value="India">India</li>
+                  <li data-value="Philippines">Philippines</li>
+                  <li data-value="Pakistan">Pakistan</li>
+                  <li data-value="Bangladesh">Bangladesh</li>
+                  <li data-value="Sri Lanka">Sri Lanka</li>
+                  <li data-value="Egypt">Egypt</li>
+                  <li data-value="Indonesia">Indonesia</li>
+                  <li data-value="Malaysia">Malaysia</li>
+                  <li data-value="United Arab Emirates">United Arab Emirates</li>
+                  <li data-value="Qatar">Qatar</li>
+                  <li data-value="Kuwait">Kuwait</li>
+                  <li data-value="Bahrain">Bahrain</li>
+                  <li data-value="Oman">Oman</li>
+                  <li data-value="Sudan">Sudan</li>
+                  <li data-value="Yemen">Yemen</li>
+                  <li data-value="Jordan">Jordan</li>
+                  <li data-value="Lebanon">Lebanon</li>
+                  <li data-value="Nepal">Nepal</li>
+                  <li data-value="United Kingdom">United Kingdom</li>
+                  <li data-value="United States">United States</li>
+                  <li data-value="Canada">Canada</li>
+                  <li data-value="Australia">Australia</li>
+                  <li data-value="China">China</li>
+                  <li data-value="Japan">Japan</li>
+                  <li data-value="South Korea">South Korea</li>
+                  <li data-value="Thailand">Thailand</li>
+                  <li data-value="Vietnam">Vietnam</li>
+                  <li data-value="Singapore">Singapore</li>
+                  <li data-value="Turkey">Turkey</li>
+                  <li data-value="Germany">Germany</li>
+                  <li data-value="France">France</li>
+                  <li data-value="Italy">Italy</li>
+                  <li data-value="Spain">Spain</li>
+                  <li data-value="Netherlands">Netherlands</li>
+                  <li data-value="Sweden">Sweden</li>
+                  <li data-value="Switzerland">Switzerland</li>
+                  <li data-value="South Africa">South Africa</li>
+                  <li data-value="Nigeria">Nigeria</li>
+                  <li data-value="Kenya">Kenya</li>
+                  <li data-value="Morocco">Morocco</li>
+                  <li data-value="Tunisia">Tunisia</li>
+                  <li data-value="Algeria">Algeria</li>
+                  <li data-value="Brazil">Brazil</li>
+                  <li data-value="Argentina">Argentina</li>
+                  <li data-value="Afghanistan">Afghanistan</li>
+                  <li data-value="Iran">Iran</li>
+                  <li data-value="Iraq">Iraq</li>
+                  <li data-value="Syria">Syria</li>
+                  <li data-value="Palestine">Palestine</li>
+                </ul>
               </div>
               <span class="error-text" id="nationalityError">Nationality is required</span>
             </div>
@@ -486,8 +544,8 @@
               </div>
             </div>
 
-            <!-- Partner Nationality Input Group -->
-            <div class="input-group">
+            <!-- Partner Nationality Combobox -->
+            <div class="input-group combobox" id="partnerNationalityCombobox">
               <div class="input-wrapper">
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
@@ -496,6 +554,64 @@
                 </svg>
                 <input type="text" id="partnerNationalityInput" placeholder=" " autocomplete="off">
                 <label for="partnerNationalityInput">Partner Nationality</label>
+                <button type="button" class="dropdown-toggle" aria-label="Toggle Partner Nationality Dropdown">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <ul class="dropdown-list" id="partnerNationalityList">
+                  <li data-value="Saudi Arabia">Saudi Arabia</li>
+                  <li data-value="India">India</li>
+                  <li data-value="Philippines">Philippines</li>
+                  <li data-value="Pakistan">Pakistan</li>
+                  <li data-value="Bangladesh">Bangladesh</li>
+                  <li data-value="Sri Lanka">Sri Lanka</li>
+                  <li data-value="Egypt">Egypt</li>
+                  <li data-value="Indonesia">Indonesia</li>
+                  <li data-value="Malaysia">Malaysia</li>
+                  <li data-value="United Arab Emirates">United Arab Emirates</li>
+                  <li data-value="Qatar">Qatar</li>
+                  <li data-value="Kuwait">Kuwait</li>
+                  <li data-value="Bahrain">Bahrain</li>
+                  <li data-value="Oman">Oman</li>
+                  <li data-value="Sudan">Sudan</li>
+                  <li data-value="Yemen">Yemen</li>
+                  <li data-value="Jordan">Jordan</li>
+                  <li data-value="Lebanon">Lebanon</li>
+                  <li data-value="Nepal">Nepal</li>
+                  <li data-value="United Kingdom">United Kingdom</li>
+                  <li data-value="United States">United States</li>
+                  <li data-value="Canada">Canada</li>
+                  <li data-value="Australia">Australia</li>
+                  <li data-value="China">China</li>
+                  <li data-value="Japan">Japan</li>
+                  <li data-value="South Korea">South Korea</li>
+                  <li data-value="Thailand">Thailand</li>
+                  <li data-value="Vietnam">Vietnam</li>
+                  <li data-value="Singapore">Singapore</li>
+                  <li data-value="Turkey">Turkey</li>
+                  <li data-value="Germany">Germany</li>
+                  <li data-value="France">France</li>
+                  <li data-value="Italy">Italy</li>
+                  <li data-value="Spain">Spain</li>
+                  <li data-value="Netherlands">Netherlands</li>
+                  <li data-value="Sweden">Sweden</li>
+                  <li data-value="Switzerland">Switzerland</li>
+                  <li data-value="South Africa">South Africa</li>
+                  <li data-value="Nigeria">Nigeria</li>
+                  <li data-value="Kenya">Kenya</li>
+                  <li data-value="Morocco">Morocco</li>
+                  <li data-value="Tunisia">Tunisia</li>
+                  <li data-value="Algeria">Algeria</li>
+                  <li data-value="Brazil">Brazil</li>
+                  <li data-value="Argentina">Argentina</li>
+                  <li data-value="Afghanistan">Afghanistan</li>
+                  <li data-value="Iran">Iran</li>
+                  <li data-value="Iraq">Iraq</li>
+                  <li data-value="Syria">Syria</li>
+                  <li data-value="Palestine">Palestine</li>
+                </ul>
               </div>
               <span class="error-text" id="partnerNationalityError">Partner Nationality is required</span>
             </div>

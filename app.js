@@ -49,6 +49,15 @@ class SearchableCombobox {
       this.isOpen ? this.close() : this.open();
     });
 
+    iEl.addEventListener('input', () => {
+      if (!iEl.readOnly) {
+        this.filterItems(iEl.value);
+        if (!this.isOpen && iEl.value.trim() !== '') {
+          this.open();
+        }
+      }
+    });
+
     const btn = this.toggleBtn;
     if (btn) {
       btn.addEventListener('click', (e) => {
@@ -64,6 +73,18 @@ class SearchableCombobox {
       const currentBox = this.combobox;
       if (currentBox && !currentBox.contains(e.target)) {
         this.close();
+      }
+    });
+  }
+
+  filterItems(query) {
+    const q = (query || '').toLowerCase().trim();
+    this.items.forEach(item => {
+      const txt = (item.textContent || '').toLowerCase();
+      if (!q || txt.includes(q)) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
       }
     });
   }
@@ -135,6 +156,10 @@ class SearchableCombobox {
     if (this.isOpen || !cEl || !lEl) return;
     this.isOpen = true;
     cEl.classList.add('open');
+
+    if (this.input && !this.input.readOnly && !this.input.value.trim()) {
+      this.filterItems('');
+    }
 
     const selected = lEl.querySelector('li.selected');
     if (selected) {
@@ -329,12 +354,16 @@ let genderCombobox = null;
 let partnerGenderCombobox = null;
 let categoryCombobox = null;
 let flightCombobox = null;
+let nationalityCombobox = null;
+let partnerNationalityCombobox = null;
 
 function initComboboxes() {
   if (!genderCombobox) genderCombobox = new SearchableCombobox('genderCombobox', 'genderInput', 'genderList');
   if (!partnerGenderCombobox) partnerGenderCombobox = new SearchableCombobox('partnerGenderCombobox', 'partnerGenderInput', 'partnerGenderList');
   if (!categoryCombobox) categoryCombobox = new SearchableCombobox('categoryCombobox', 'categoryInput', 'categoryList');
   if (!flightCombobox) flightCombobox = new SearchableCombobox('flightCombobox', 'flightInput', 'flightList');
+  if (!nationalityCombobox) nationalityCombobox = new SearchableCombobox('nationalityCombobox', 'nationalityInput', 'nationalityList');
+  if (!partnerNationalityCombobox) partnerNationalityCombobox = new SearchableCombobox('partnerNationalityCombobox', 'partnerNationalityInput', 'partnerNationalityList');
 }
 
 
@@ -569,6 +598,10 @@ function checkDoublesCategory() {
     });
     partnerGenderCombobox.reset();
     partnerGenderCombobox.enable();
+    if (partnerNationalityCombobox) {
+      partnerNationalityCombobox.reset();
+      partnerNationalityCombobox.enable();
+    }
     ['partnerNameError', 'partnerPhoneError', 'partnerIqamaError', 'partnerGenderError', 'partnerDobError', 'partnerNationalityError'].forEach(errId => {
       const el = document.getElementById(errId);
       if (el) el.textContent = '';
@@ -1013,6 +1046,8 @@ resetBtn.addEventListener('click', () => {
   partnerGenderCombobox.reset();
   categoryCombobox.reset();
   flightCombobox.reset();
+  if (nationalityCombobox) nationalityCombobox.reset();
+  if (partnerNationalityCombobox) partnerNationalityCombobox.reset();
 
   partnerSection.classList.add('hidden');
   updateCategoryAndAgeUI();
