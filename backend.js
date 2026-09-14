@@ -163,10 +163,10 @@ function doPost(e) {
             categoryCount++;
             existingFlights.push(rowFlight);
 
-            // A) Check duplicate category registration for same player
-            if (rowCategory === category) {
+            // A) Check exact duplicate (same category AND same level) for same player
+            if (rowCategory === category && rowFlight === flight) {
               const role = isMain ? 'Main Player' : 'Co-Player / Partner';
-              return `Registration blocked: ${playerNameLabel} (Iqama/ID: ${playerId}) is already registered in event category "${category}" (as ${role}).`;
+              return `Registration blocked: ${playerNameLabel} (Iqama/ID: ${playerId}) is already registered for "${category}" in level "${flight}" (as ${role}).`;
             }
           }
         }
