@@ -255,10 +255,132 @@ function doPost(e) {
     // 9. Auto-adjust columns to fit content widths
     sheet.autoResizeColumns(1, 17);
 
-    // 10. Return success status
+    // 10. Send Email Confirmation
+    let emailSent = false;
+    try {
+      if (email) {
+        const subject = `Navodaya Open 2026 - Registration Confirmation (${category})`;
+
+        let partnerHtml = '';
+        if (isDoubles && partnerName) {
+          partnerHtml = `
+            <tr style="background-color: #f8fafc;">
+              <td colspan="2" style="padding: 10px 14px; font-weight: bold; color: #1e293b; border-bottom: 1px solid #e2e8f0; font-size: 14px;">
+                🎾 Partner Details
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Partner Name</td>
+              <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${partnerName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Partner Contact</td>
+              <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">+${partnerPhone}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Partner Iqama / ID</td>
+              <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${partnerIqama}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Partner Gender & DOB</td>
+              <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${partnerGender} | ${partnerDob}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Partner Nationality</td>
+              <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${partnerNationality}</td>
+            </tr>
+          `;
+        }
+
+        const htmlBody = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 12px;">
+            <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 24px; border-radius: 10px; text-align: center; color: #ffffff;">
+              <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #38bdf8;">NAVODAYA OPEN 2026</h1>
+              <p style="margin: 6px 0 0 0; font-size: 14px; color: #94a3b8;">International Badminton Tournament Confirmation</p>
+            </div>
+            
+            <div style="background-color: #ffffff; padding: 24px; border-radius: 10px; margin-top: 16px; border: 1px solid #e2e8f0;">
+              <h2 style="margin-top: 0; color: #1e293b; font-size: 16px; font-weight: 600;">Registration Confirmed! 🎉</h2>
+              <p style="color: #475569; font-size: 14px; line-height: 1.5;">
+                Dear <strong>${name}</strong>,<br>
+                Thank you for registering for <strong>Navodaya Open 2026</strong>. Here are your tournament entry details:
+              </p>
+              
+              <table style="width: 100%; border-collapse: collapse; margin-top: 16px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                <tr style="background-color: #f1f5f9;">
+                  <td colspan="2" style="padding: 10px 14px; font-weight: bold; color: #1e293b; border-bottom: 1px solid #e2e8f0; font-size: 14px;">
+                    📋 Event Information
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9; width: 40%;">Event Category</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0284c7; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${category}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Level / Flight</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${flight}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Registration Time</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${timestamp}</td>
+                </tr>
+                
+                <tr style="background-color: #f8fafc;">
+                  <td colspan="2" style="padding: 10px 14px; font-weight: bold; color: #1e293b; border-bottom: 1px solid #e2e8f0; font-size: 14px;">
+                    👤 Player Details
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Full Name</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Phone / WhatsApp</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">+${phone}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Iqama / ID Number</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${iqama}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Gender & DOB</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${gender} | ${dob}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">Nationality</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${nationality}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #64748b; border-bottom: 1px solid #f1f5f9;">City / Club Name</td>
+                  <td style="padding: 8px 14px; font-size: 13px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">${club}</td>
+                </tr>
+                
+                ${partnerHtml}
+              </table>
+              
+              <p style="color: #64748b; font-size: 12px; margin-top: 20px; line-height: 1.4; border-top: 1px dashed #cbd5e1; padding-top: 12px;">
+                This is an automated confirmation email for Navodaya Open 2026. Please retain this email for your records. If you have any questions, please contact tournament organizers.
+              </p>
+            </div>
+          </div>
+        `;
+
+        MailApp.sendEmail({
+          to: email,
+          subject: subject,
+          htmlBody: htmlBody
+        });
+        emailSent = true;
+      }
+    } catch (emailErr) {
+      Logger.log('Failed to send confirmation email: ' + emailErr.toString());
+    }
+
+    // 11. Return success status
     return jsonResponse('success', 'Tournament entry saved successfully.', {
       timestamp: timestamp,
-      insertedRow: sheet.getLastRow()
+      insertedRow: sheet.getLastRow(),
+      emailSent: emailSent
     });
 
   } catch (error) {
