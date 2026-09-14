@@ -365,9 +365,12 @@ function doPost(e) {
           </div>
         `;
 
+        const plainTextBody = `NAVODAYA OPEN 2026 - Registration Confirmation\n\nDear ${name},\nThank you for registering for Navodaya Open 2026.\n\nRegistration Details:\n- Event Category: ${category}\n- Level / Flight: ${flight}\n- Timestamp: ${timestamp}\n\nPlayer Details:\n- Name: ${name}\n- Phone: +${phone}\n- Iqama / ID: ${iqama}\n- Gender: ${gender}\n- DOB: ${dob}\n- Nationality: ${nationality}\n- City / Club: ${club}\n${isDoubles && partnerName ? `\nPartner Details:\n- Partner Name: ${partnerName}\n- Partner Phone: +${partnerPhone}\n- Partner Iqama: ${partnerIqama}\n- Partner Gender: ${partnerGender}\n- Partner DOB: ${partnerDob}\n- Partner Nationality: ${partnerNationality}\n` : ''}\nThank you!`;
+
         MailApp.sendEmail({
           to: email,
           subject: subject,
+          body: plainTextBody,
           htmlBody: htmlBody
         });
         emailSent = true;
