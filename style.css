@@ -912,47 +912,73 @@ h2 {
   }
 }
 
+/* Disabled / Read-Only Combobox Styling */
+.combobox.disabled-combobox {
+  opacity: 0.88;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.combobox.disabled-combobox input {
+  cursor: not-allowed;
+  background-color: rgba(11, 23, 48, 0.6);
+  border-color: rgba(212, 175, 55, 0.25);
+  color: var(--text-primary);
+}
+
+.combobox.disabled-combobox .dropdown-toggle {
+  display: none !important;
+}
+
 /* Prefixed Input Field Styling */
 .prefixed {
   position: relative;
 }
 
-.prefixed .input-prefix {
+.country-code-select {
   position: absolute;
-  left: 48px;
+  left: 44px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1rem;
-  font-weight: 500;
+  background: transparent;
+  border: none;
+  outline: none;
   color: var(--accent-secondary);
-  pointer-events: none;
-  z-index: 2;
-  transition: color var(--transition-speed) ease;
+  font-family: var(--font-family);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 3;
+  padding: 4px 2px;
+  width: 108px;
+}
+
+.country-code-select option {
+  background-color: #0b1730;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 6px;
 }
 
 .prefixed input {
-  padding-left: 96px;
+  padding-left: 156px;
 }
 
 .prefixed label {
-  left: 96px;
-}
-
-/* Focused prefix color glow */
-.prefixed input:focus ~ .input-prefix {
-  color: var(--accent-primary);
+  left: 156px;
 }
 
 @media (max-width: 480px) {
-  .prefixed .input-prefix {
-    left: 44px;
-    font-size: 0.95rem;
+  .country-code-select {
+    left: 40px;
+    font-size: 0.82rem;
+    width: 98px;
   }
   .prefixed input {
-    padding-left: 90px;
+    padding-left: 144px;
   }
   .prefixed label {
-    left: 90px;
+    left: 144px;
   }
 }
 
@@ -1038,6 +1064,67 @@ h2 {
   z-index: 5;
   pointer-events: none;
 }
+
+/* Age & Category Eligibility Badge */
+.age-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 58, 138, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  margin-top: -4px;
+  margin-bottom: 12px;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.age-badge-container.hidden {
+  display: none !important;
+}
+
+.age-badge-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-secondary);
+  flex-shrink: 0;
+}
+
+.age-badge-tag {
+  background: var(--accent-primary);
+  color: #070d1e;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: auto;
+}
+
+.age-badge-tag.junior {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.age-badge-tag.open {
+  background: #4ade80;
+  color: #052e16;
+}
+
+.age-badge-tag.veterans {
+  background: #fbbf24;
+  color: #451a03;
+}
+
+.age-badge-tag.masters {
+  background: #c084fc;
+  color: #3b0764;
+}
+
 
 
 

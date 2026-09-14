@@ -4,7 +4,7 @@ A mobile-first entry & invitation portal with a glassmorphic dark-theme user int
 
 ## Features
 - **Badminton Tournament Branding:** Animated shuttlecock badge header, energetic dark neon violet theme, and Outfit typography.
-- **Dynamic Event Categories & Doubles Partner Details:** Automatically reveals Partner Name & Contact fields when Doubles categories (Men's, Women's, Mixed, Veterans) are selected.
+- **Dynamic Event Categories & Doubles Partner Details:** Automatically reveals Partner Name & Contact fields when Doubles categories (Mens Doubles, Womens Doubles, Mixed Doubles, Girls Doubles, Boys Doubles) are selected.
 - **Comprehensive Entry Fields:** Collects Full Name, Phone / WhatsApp, Email, Country/Club, Event Category, Flight/Grade Level, Partner Details, Navodaya Area/Unit (or Guest/International player), and Jersey / T-Shirt Size.
 - **Client & Server Validation:** Ensures phone number formats, valid emails, and required tournament fields are validated before submission.
 - **Serverless Google Sheets Backend:** Appends tournament entries into a structured 12-column spreadsheet row with auto-timestamping.
